@@ -14,11 +14,29 @@
       <section>
         <div id="search-section" class="text-center">
           <input type="text" name="" id="search-field" placeholder="Search Cocktail">
-          <button class="btn btn-primary">Search</button>
+          <button id="btn-search" class="btn btn-primary">Search</button>
         </div>
         <h3>
           Some Items of Cocktail DB:
         </h3>
+        <div id="no-cocktail-found" class="text-center py-3 d-none">
+          <h3 class="text-danger">No Cocktail found! Please Search new Cockatail.</h3>
+        </div>
+        <div id="spinner" style="height: 50vh;" class="d-flex d-none justify-content-center align-items-center">
+          <div class="spinner-border text-danger" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </section>
+      <section class="item-section py-4">
+            <div id="cocktail-container" class="row row-cols-1 row-cols-md-3 g-4">
+              <!-- <div class="col">
+                
+              </div> -->
+            </div>
+            <div id="show-all" class="text-center">
+              <button id="btn-show-all" class="btn btn-primary ">Show More</button>
+            </div>
       </section>
     </main>
 
@@ -29,5 +47,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>
