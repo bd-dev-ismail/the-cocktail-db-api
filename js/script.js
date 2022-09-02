@@ -1,14 +1,22 @@
-const loadCocktail = async(search) =>{
+const loadCocktail = async(search, dataLimit) =>{
     const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${search}`;
     const res = await fetch(url);
     const data = await res.json();
-    displayCocktail(data.drinks);
+    displayCocktail(data.drinks, dataLimit);
 };
-const displayCocktail = (cocktail) =>{
-    console.log(cocktail);
+const displayCocktail = (cocktail, dataLimit) =>{
+    // console.log(cocktail);
     const cocktailContainer = document.getElementById("cocktail-container");
     cocktailContainer.textContent = '';
-    // cocktail = cocktail.slice(0, 20);
+    const showAll = document.getElementById("show-all");
+    if(dataLimit && cocktail.length >= 10){
+        cocktail = cocktail.slice(0, 10);
+        console.log(cocktail)
+        showAll.classList.remove('d-none');
+    }
+    else{
+        showAll.classList.add('d-none');
+    }
     const noCocktail = document.getElementById("no-cocktail-found");
     if(cocktail  === null){
         noCocktail.classList.remove('d-none');
@@ -18,6 +26,7 @@ const displayCocktail = (cocktail) =>{
         noCocktail.classList.add('d-none');
     };
     cocktail.forEach(element => {
+        console.log(element)
         const cocktailDiv = document.createElement('div');
         cocktailDiv.classList.add('col');
         cocktailDiv.innerHTML = `
@@ -25,7 +34,11 @@ const displayCocktail = (cocktail) =>{
                 <img src="${element.strDrinkThumb}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">${element.strDrink}</h5>
-                    <p class="card-text">${element.strInstructions ? element.strInstructions.slice(0, 100) : 'No Description Found'}</p>
+                    <p class="card-text">${element.strInstructions ? element.strInstructions.slice(0, 50) : 'No Description Found'}</p>
+                          <!-- Button trigger modal -->
+          <button onclick="loadCocktailDetails('${element.idDrink}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cocktailModal">
+            Show Detalis
+          </button>
                 </div>
             </div>
         `;
@@ -44,23 +57,47 @@ const spinner = isLoading =>{
         spinnerContainer.classList.add('d-none');
     };
 };
-const searchProcess = () =>{
+const searchProcess = (dataLimit) =>{
 //Start Spinner
     spinner(true);
     const searchField = document.getElementById('search-field');
     const searchText = searchField.value;
-    loadCocktail(searchText);
+    loadCocktail(searchText, dataLimit);
 }
 //Search btn 
 document.getElementById("btn-search").addEventListener('click', function() {
-    searchProcess();
+    searchProcess(10);
 });
 //search enter key
 document.getElementById('search-field').addEventListener('keypress', function(e){
     // console.log(e.key)
     if(e.key === 'Enter'){
-        searchProcess();
+        searchProcess(10);
     }
 });
+//Show All button
+document.getElementById("btn-show-all").addEventListener('click', function(){
+    searchProcess();
+});
+//Modal show
+const loadCocktailDetails = async(id) =>{
+    const url = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    displayCocktailDetails(data.drinks[0]);
+};
+const displayCocktailDetails = (data) =>{
+    console.log(data);
+    const modalTitle = document.getElementById("cocktailModalLabel");
+    modalTitle.innerText = data.strDrink;
+    const modalContainer = document.getElementById('modal-container');
+    modalContainer.innerHTML = `
+    <img class="img-fluid" src="${data.strDrinkThumb}">
+    <h3>${data.strIngredient2}</h3>
+    <p>Date: ${data.dateModified}</p>
+    <p>Description: ${data.strInstructionsIT? data.strInstructionsIT : 'No description Found'}</p>
 
+    `;
+};
 loadCocktail('a');
+//defult set korle value 10tar beshi dekace ..need to solve it
